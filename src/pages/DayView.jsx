@@ -54,15 +54,7 @@ export default function DayView({ completed, onToggle }) {
             <div className="space-y-4">
               {groupRows(d.workout).map((row, ri) => {
                 if (row.type === "single") {
-                  const key = `${idx}-ex-${row.i}`;
-                  return (
-                    <ExerciseCard
-                      key={key}
-                      exercise={row.ex}
-                      done={!!completed[key]}
-                      onToggle={() => onToggle(key)}
-                    />
-                  );
+                  return renderExercise(row.ex, row.i, idx, completed, onToggle);
                 }
                 return (
                   <div
@@ -84,17 +76,9 @@ export default function DayView({ completed, onToggle }) {
                         Alternate, minimal rest between
                       </span>
                     </div>
-                    {row.items.map(({ ex, i }) => {
-                      const key = `${idx}-ex-${i}`;
-                      return (
-                        <ExerciseCard
-                          key={key}
-                          exercise={ex}
-                          done={!!completed[key]}
-                          onToggle={() => onToggle(key)}
-                        />
-                      );
-                    })}
+                    {row.items.map(({ ex, i }) =>
+                      renderExercise(ex, i, idx, completed, onToggle)
+                    )}
                   </div>
                 );
               })}
@@ -120,6 +104,29 @@ export default function DayView({ completed, onToggle }) {
         </div>
       )}
     </div>
+  );
+}
+
+// Pull the leading set count from a sets string like "4 × 6–8" or
+// "1 × 100 breaths". Returns 0 if the string doesn't start with a number.
+function parseSetCount(sets) {
+  if (typeof sets !== "string") return 0;
+  const match = sets.match(/^\s*(\d+)/);
+  return match ? parseInt(match[1], 10) : 0;
+}
+
+function renderExercise(ex, i, idx, completed, onToggle) {
+  const key = `${idx}-ex-${i}`;
+  const setCount = parseSetCount(ex.sets);
+  const doneSets = Array.from({ length: setCount }, (_, s) => !!completed[`${key}-set-${s}`]);
+  return (
+    <ExerciseCard
+      key={key}
+      exercise={ex}
+      setCount={setCount}
+      doneSets={doneSets}
+      onToggleSet={(s) => onToggle(`${key}-set-${s}`)}
+    />
   );
 }
 
