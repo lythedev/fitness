@@ -4,10 +4,13 @@ import Timer from "./Timer";
 import { COLORS, FONT_SANS } from "../theme";
 import { getImagePath, getFilename } from "../data";
 
-export default function ExerciseCard({ exercise, done, onToggle }) {
+export default function ExerciseCard({ exercise, setCount, doneSets, onToggleSet }) {
+  const totalSets = setCount || 0;
+  const allDone = totalSets > 0 && doneSets.length === totalSets && doneSets.every(Boolean);
+
   return (
     <div
-      className={`rounded-2xl border shadow-sm overflow-hidden transition-opacity ${done ? "opacity-60" : ""}`}
+      className={`rounded-2xl border shadow-sm overflow-hidden transition-opacity ${allDone ? "opacity-60" : ""}`}
       style={{ backgroundColor: COLORS.card, borderColor: COLORS.border }}
     >
       <ExerciseImage
@@ -16,26 +19,9 @@ export default function ExerciseCard({ exercise, done, onToggle }) {
         filename={getFilename(exercise.image)}
       />
       <div className="p-5">
-        <div className="flex items-start justify-between gap-3 mb-2">
-          <h3 className="text-xl leading-tight font-semibold" style={{ color: COLORS.ink }}>
-            {exercise.name}
-          </h3>
-          <button onClick={onToggle} className="shrink-0 mt-1">
-            {done ? (
-              <div
-                className="w-7 h-7 rounded-full flex items-center justify-center shadow-sm"
-                style={{ backgroundColor: COLORS.sage }}
-              >
-                <Check size={16} className="text-white" />
-              </div>
-            ) : (
-              <div
-                className="w-7 h-7 rounded-full border-2"
-                style={{ borderColor: COLORS.border }}
-              />
-            )}
-          </button>
-        </div>
+        <h3 className="text-xl leading-tight font-semibold mb-2" style={{ color: COLORS.ink }}>
+          {exercise.name}
+        </h3>
         <div className="flex items-center gap-2 flex-wrap mb-3">
           <span
             className="inline-block text-sm tracking-wide px-3 py-1 rounded-full"
@@ -50,6 +36,51 @@ export default function ExerciseCard({ exercise, done, onToggle }) {
           </span>
           {exercise.timer && <Timer seconds={exercise.timer} />}
         </div>
+        {totalSets > 0 && (
+          <div className="flex items-center gap-2 flex-wrap mb-3">
+            <span
+              className="text-xs uppercase tracking-widest"
+              style={{ color: COLORS.inkSoft, fontFamily: FONT_SANS, fontWeight: 700 }}
+            >
+              Sets
+            </span>
+            <div className="flex gap-2">
+              {Array.from({ length: totalSets }).map((_, s) => {
+                const done = !!doneSets[s];
+                return (
+                  <button
+                    key={s}
+                    onClick={() => onToggleSet(s)}
+                    aria-label={`Set ${s + 1} ${done ? "complete" : "incomplete"}`}
+                    aria-pressed={done}
+                    className="shrink-0"
+                  >
+                    {done ? (
+                      <div
+                        className="w-9 h-9 rounded-full flex items-center justify-center shadow-sm"
+                        style={{ backgroundColor: COLORS.sage }}
+                      >
+                        <Check size={18} className="text-white" />
+                      </div>
+                    ) : (
+                      <div
+                        className="w-9 h-9 rounded-full border-2 flex items-center justify-center text-xs"
+                        style={{
+                          borderColor: COLORS.border,
+                          color: COLORS.inkSoft,
+                          fontFamily: FONT_SANS,
+                          fontWeight: 600,
+                        }}
+                      >
+                        {s + 1}
+                      </div>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
         <p className="text-sm italic leading-relaxed" style={{ color: COLORS.inkSoft }}>
           {exercise.cue}
         </p>
