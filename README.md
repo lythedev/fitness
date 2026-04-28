@@ -50,6 +50,16 @@ lat-pulldown            db-row                  pushup
 bicep-curl              pallof-press            hanging-knee-raise
 woodchopper             dead-bug                side-plank
 plank
+
+# pilates — core & posture
+the-hundred             roll-up                 single-leg-stretch
+criss-cross             swan                    side-leg-lift
+forearm-plank
+
+# pilates — glutes & lower body
+pelvic-curl             single-leg-bridge       clamshell-pulse
+donkey-kick             side-leg-circle         inner-thigh-lift
+bird-dog
 ```
 
 Missing images render an inline placeholder showing the expected filename — no broken-image icons.

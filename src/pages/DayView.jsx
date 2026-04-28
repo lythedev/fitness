@@ -17,7 +17,7 @@ export default function DayView({ completed, onToggle }) {
     <div className="min-h-screen" style={{ fontFamily: FONT_SERIF, backgroundColor: COLORS.bg }}>
       <DayHero day={d} onBack={() => navigate("/")} />
 
-      {d.type !== "lift" ? (
+      {!d.workout ? (
         <div className="px-6 py-12">
           <div
             className="rounded-3xl p-8 shadow-md border"
@@ -48,7 +48,7 @@ export default function DayView({ completed, onToggle }) {
                 className="text-xs uppercase tracking-widest"
                 style={{ color: COLORS.terracotta, fontFamily: FONT_SANS, fontWeight: 700 }}
               >
-                Track your lifts
+                {d.type === "pilates" ? "Move with control" : "Track your lifts"}
               </span>
             </div>
             <div className="space-y-4">
@@ -75,12 +75,13 @@ export default function DayView({ completed, onToggle }) {
             onToggle={onToggle}
           />
 
-          <div className="pt-2 pb-12 text-center">
-            <p className="text-sm italic" style={{ color: COLORS.inkSoft }}>
-              Add 5 lbs or 1–2 reps somewhere this week.<br />
-              That's how glutes grow.
-            </p>
-          </div>
+          {d.closing && (
+            <div className="pt-2 pb-12 text-center">
+              <p className="text-sm italic whitespace-pre-line" style={{ color: COLORS.inkSoft }}>
+                {d.closing}
+              </p>
+            </div>
+          )}
         </div>
       )}
     </div>
