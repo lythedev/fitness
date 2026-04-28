@@ -63,9 +63,14 @@ export const exercises = {
     cue: "Knees down if needed. Full range of motion.",
   },
   bicepCurl: {
-    name: "Bicep Curl + Tricep Extension",
+    name: "Bicep Curl",
     image: "bicep-curl",
     cue: "Slow on the way down. No swinging.",
+  },
+  tricepExtension: {
+    name: "Tricep Extension",
+    image: "tricep-extension",
+    cue: "Keep elbows tucked. Full extension at the top.",
   },
   pallof: {
     name: "Pallof Press",
