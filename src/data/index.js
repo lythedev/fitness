@@ -5,9 +5,10 @@ import { weekDays } from "./week";
 export { exercises, routines };
 
 export const IMAGE_EXT = "jpeg";
-const IMAGE_FOLDER = `${import.meta.env.BASE_URL}images/exercises`;
+const IMAGE_BASE = `${import.meta.env.BASE_URL}images`;
 
-export const getImagePath = (slug) => `${IMAGE_FOLDER}/${slug}.${IMAGE_EXT}`;
+export const getImagePath = (slug) => `${IMAGE_BASE}/exercises/${slug}.${IMAGE_EXT}`;
+export const getMovePath = (slug) => `${IMAGE_BASE}/moves/${slug}.${IMAGE_EXT}`;
 export const getFilename = (slug) => `${slug}.${IMAGE_EXT}`;
 
 function resolveDay(d) {

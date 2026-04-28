@@ -1,126 +1,296 @@
 // Reusable warm-up / cool-down primitives and named blocks.
-// Atoms are single items (string for rep-based, { text, timer } for timed).
-// Blocks are arrays composed from atoms — routines reference blocks directly.
+// Every move is { name, image, cue, timer? }. Blocks are arrays of moves.
 
-// Cardio primers
-export const cardio = {
-  inclineWalk3:      { text: "3 min incline walk or bike",      timer: 180 },
-  inclineWalk3Plain: { text: "3 min incline walk",              timer: 180 },
-  light2:            { text: "2 min light cardio",              timer: 120 },
-  marchBreath2:      { text: "2 min easy march + nasal breathing", timer: 120 },
-  march2:            { text: "2 min march in place",            timer: 120 },
+// Single shared catalog: cardio primers, mobility/activation reps, and stretches.
+// Same shape so the Checklist UI can render them uniformly with a diagram + cue.
+export const moves = {
+  // Cardio primers
+  inclineWalk3: {
+    name: "3 min incline walk or bike",
+    image: "incline-walk",
+    cue: "Easy pace. Just enough to warm the body.",
+    timer: 180,
+  },
+  inclineWalk3Plain: {
+    name: "3 min incline walk",
+    image: "incline-walk",
+    cue: "Brisk but conversational. Set incline to 5–8%.",
+    timer: 180,
+  },
+  light2: {
+    name: "2 min light cardio",
+    image: "light-cardio",
+    cue: "Walk, bike, or march — get the blood moving.",
+    timer: 120,
+  },
+  marchBreath2: {
+    name: "2 min easy march + nasal breathing",
+    image: "march",
+    cue: "In through the nose, out through the nose. Settle in.",
+    timer: 120,
+  },
+  march2: {
+    name: "2 min march in place",
+    image: "march",
+    cue: "Lift the knees. Swing the arms naturally.",
+    timer: 120,
+  },
+
+  // Mobility / activation
+  bwGluteBridges: {
+    name: "10 bodyweight glute bridges",
+    image: "glute-bridge",
+    cue: "Drive through the heels. Squeeze hard at the top.",
+  },
+  bwSquats: {
+    name: "10 bodyweight squats",
+    image: "bodyweight-squat",
+    cue: "Sit between your hips. Knees track over toes.",
+  },
+  bandedGluteBridges: {
+    name: "10 banded glute bridges",
+    image: "banded-glute-bridge",
+    cue: "Press the knees out against the band the whole time.",
+  },
+  bandedClamshells: {
+    name: "10 banded clamshells each side",
+    image: "clamshell",
+    cue: "Stack the hips. Don't let the top one roll back.",
+  },
+  bandedLateralWalks: {
+    name: "10 banded lateral walks each direction",
+    image: "banded-lateral-walk",
+    cue: "Stay low. Keep tension on the band the whole step.",
+  },
+  bandedMonsterWalks: {
+    name: "10 banded monster walks",
+    image: "monster-walk",
+    cue: "Small steps forward and back. Knees pressed out.",
+  },
+  walkingLunges: {
+    name: "10 walking lunges",
+    image: "walking-lunge",
+    cue: "Long stride. Push through the front heel.",
+  },
+  pilatesGluteBridges: {
+    name: "Bodyweight glute bridges — 10 reps",
+    image: "glute-bridge",
+    cue: "Slow and controlled. Peel the spine up one bone at a time.",
+  },
+  pilatesSquatsReach: {
+    name: "Bodyweight squats with reach — 10 reps",
+    image: "squat-reach",
+    cue: "Reach overhead as you stand. Lengthen tall.",
+  },
+  armCircles: {
+    name: "Arm circles — 10 each direction",
+    image: "arm-circle",
+    cue: "Big circles, then smaller. Loosen the shoulders.",
+  },
+  bandPullAparts: {
+    name: "Band pull-aparts — 15 reps",
+    image: "band-pull-apart",
+    cue: "Squeeze the shoulder blades together. Stay tall.",
+  },
+  catCow: {
+    name: "Cat-cow — 8 reps",
+    image: "cat-cow",
+    cue: "Move with the breath. Inhale arch, exhale round.",
+  },
+  scapPushups: {
+    name: "Scapular push-ups — 10 reps",
+    image: "scap-pushup",
+    cue: "Just the shoulder blades — keep the arms straight.",
+  },
+  pelvicTilts: {
+    name: "Pelvic tilts — 10 reps",
+    image: "pelvic-tilt",
+    cue: "Small rocks. Find neutral, then tuck and untuck.",
+  },
+  rollDowns: {
+    name: "Roll downs — 5 reps",
+    image: "roll-down",
+    cue: "Chin to chest. Melt down one vertebra at a time.",
+  },
+  spineTwist: {
+    name: "Seated spine twist — 8 each side",
+    image: "seated-spine-twist",
+    cue: "Sit tall first, then rotate from the ribs.",
+  },
+  hipCircles: {
+    name: "Hip circles — 8 each direction",
+    image: "hip-circle",
+    cue: "Hands on hips. Big slow circles each way.",
+  },
+
+  // Stretches (cool-downs)
+  pigeon: {
+    name: "Pigeon pose — 1 min each side",
+    image: "pigeon",
+    cue: "Square the hips. Breathe into the front glute.",
+    timer: 60,
+  },
+  figure4: {
+    name: "Figure-4 stretch — 1 min each side",
+    image: "figure-4",
+    cue: "On your back. Pull the bottom thigh toward your chest.",
+    timer: 60,
+  },
+  happyBaby: {
+    name: "Happy baby — 1 min",
+    image: "happy-baby",
+    cue: "Grip the outside of the feet. Rock gently side to side.",
+    timer: 60,
+  },
+  childsPose: {
+    name: "Child's pose — 1 min",
+    image: "childs-pose",
+    cue: "Hips back to heels, forehead down. Breathe wide into the back.",
+    timer: 60,
+  },
+  childsPoseSideReach: {
+    name: "Child's pose with side reach — 30 sec each side",
+    image: "childs-pose-side-reach",
+    cue: "Walk the hands to one side, then the other.",
+    timer: 30,
+  },
+  couchStretch: {
+    name: "Couch stretch — 1 min each side",
+    image: "couch-stretch",
+    cue: "Back foot up against the wall. Squeeze the back glute.",
+    timer: 60,
+  },
+  quadStretch: {
+    name: "Standing quad stretch — 30 sec each",
+    image: "quad-stretch",
+    cue: "Pull the heel to the butt. Knees together. Tuck the pelvis.",
+    timer: 30,
+  },
+  hamstringStretch: {
+    name: "Seated hamstring stretch — 1 min each side",
+    image: "hamstring-stretch",
+    cue: "Lengthen the spine first, then hinge from the hips.",
+    timer: 60,
+  },
+  forwardFold: {
+    name: "Standing forward fold — 1 min",
+    image: "forward-fold",
+    cue: "Soft knees. Let the head and arms hang heavy.",
+    timer: 60,
+  },
+  seatedForwardFold: {
+    name: "Seated forward fold — 1 min",
+    image: "seated-forward-fold",
+    cue: "Hinge from the hips, not the lower back.",
+    timer: 60,
+  },
+  supineTwist60: {
+    name: "Supine spinal twist — 1 min each side",
+    image: "supine-twist",
+    cue: "Knees over to one side, opposite arm wide. Look away.",
+    timer: 60,
+  },
+  supineTwist30: {
+    name: "Supine spinal twist — 30 sec each side",
+    image: "supine-twist",
+    cue: "Same shape — keep the shoulders pinned to the floor.",
+    timer: 30,
+  },
+  doorwayChest: {
+    name: "Doorway chest stretch — 30 sec each side",
+    image: "doorway-chest",
+    cue: "Forearm on the frame. Step through gently.",
+    timer: 30,
+  },
+  shoulderCross: {
+    name: "Cross-body shoulder stretch — 30 sec each",
+    image: "shoulder-cross",
+    cue: "Pull the arm across. Keep the shoulder pulled down.",
+    timer: 30,
+  },
+  threadNeedle: {
+    name: "Thread the needle — 30 sec each side",
+    image: "thread-the-needle",
+    cue: "From all fours, thread one arm under the other.",
+    timer: 30,
+  },
+  cobraChildFlow: {
+    name: "Cobra to child's flow — 30 sec",
+    image: "cobra-child-flow",
+    cue: "Cobra on the inhale, child's pose on the exhale.",
+    timer: 30,
+  },
 };
 
-// Mobility / activation reps (rep-based, no timer)
-export const mobility = {
-  bwGluteBridges:   "10 bodyweight glute bridges",
-  bwSquats:         "10 bodyweight squats",
-  bandedGluteBridges: "10 banded glute bridges",
-  bandedClamshells: "10 banded clamshells each side",
-  bandedLateralWalks: "10 banded lateral walks each direction",
-  bandedMonsterWalks: "10 banded monster walks",
-  walkingLunges:    "10 walking lunges",
-  pilatesGluteBridges: "Bodyweight glute bridges — 10 reps",
-  pilatesSquatsReach:  "Bodyweight squats with reach — 10 reps",
-  armCircles:       "Arm circles — 10 each direction",
-  bandPullAparts:   "Band pull-aparts — 15 reps",
-  catCow:           "Cat-cow — 8 reps",
-  scapPushups:      "Scapular push-ups — 10 reps",
-  pelvicTilts:      "Pelvic tilts — 10 reps",
-  rollDowns:        "Roll downs — 5 reps",
-  spineTwist:       "Seated spine twist — 8 each side",
-  hipCircles:       "Hip circles — 8 each direction",
-};
-
-// Stretches (timed, used in cool-downs)
-export const stretches = {
-  pigeon:             { text: "Pigeon pose — 1 min each side",            timer: 60 },
-  figure4:            { text: "Figure-4 stretch — 1 min each side",       timer: 60 },
-  happyBaby:          { text: "Happy baby — 1 min",                       timer: 60 },
-  childsPose:         { text: "Child's pose — 1 min",                     timer: 60 },
-  childsPoseSideReach:{ text: "Child's pose with side reach — 30 sec each side", timer: 30 },
-  couchStretch:       { text: "Couch stretch — 1 min each side",          timer: 60 },
-  quadStretch:        { text: "Standing quad stretch — 30 sec each",      timer: 30 },
-  hamstringStretch:   { text: "Seated hamstring stretch — 1 min each side", timer: 60 },
-  forwardFold:        { text: "Standing forward fold — 1 min",            timer: 60 },
-  seatedForwardFold:  { text: "Seated forward fold — 1 min",              timer: 60 },
-  supineTwist60:      { text: "Supine spinal twist — 1 min each side",    timer: 60 },
-  supineTwist30:      { text: "Supine spinal twist — 30 sec each side",   timer: 30 },
-  doorwayChest:       { text: "Doorway chest stretch — 30 sec each side", timer: 30 },
-  shoulderCross:      { text: "Cross-body shoulder stretch — 30 sec each", timer: 30 },
-  threadNeedle:       { text: "Thread the needle — 30 sec each side",     timer: 30 },
-  cobraChildFlow:     { text: "Cobra to child's flow — 30 sec",           timer: 30 },
-};
-
-// Named blocks — composed from atoms. Routines reference these directly.
+// Named blocks — composed from moves. Routines reference these directly.
 export const warmups = {
   glute: [
-    cardio.inclineWalk3,
-    mobility.bwGluteBridges,
-    mobility.bwSquats,
-    mobility.bandedClamshells,
-    mobility.bandedLateralWalks,
+    moves.inclineWalk3,
+    moves.bwGluteBridges,
+    moves.bwSquats,
+    moves.bandedClamshells,
+    moves.bandedLateralWalks,
   ],
   upper: [
-    cardio.light2,
-    mobility.armCircles,
-    mobility.bandPullAparts,
-    mobility.catCow,
-    mobility.scapPushups,
+    moves.light2,
+    moves.armCircles,
+    moves.bandPullAparts,
+    moves.catCow,
+    moves.scapPushups,
   ],
   gluteQuad: [
-    cardio.inclineWalk3Plain,
-    mobility.bwSquats,
-    mobility.walkingLunges,
-    mobility.bandedGluteBridges,
-    mobility.bandedMonsterWalks,
+    moves.inclineWalk3Plain,
+    moves.bwSquats,
+    moves.walkingLunges,
+    moves.bandedGluteBridges,
+    moves.bandedMonsterWalks,
   ],
   pilatesCore: [
-    cardio.marchBreath2,
-    mobility.catCow,
-    mobility.pelvicTilts,
-    mobility.rollDowns,
-    mobility.spineTwist,
+    moves.marchBreath2,
+    moves.catCow,
+    moves.pelvicTilts,
+    moves.rollDowns,
+    moves.spineTwist,
   ],
   pilatesLower: [
-    cardio.march2,
-    mobility.hipCircles,
-    mobility.catCow,
-    mobility.pilatesGluteBridges,
-    mobility.pilatesSquatsReach,
+    moves.march2,
+    moves.hipCircles,
+    moves.catCow,
+    moves.pilatesGluteBridges,
+    moves.pilatesSquatsReach,
   ],
 };
 
 export const cooldowns = {
   glute: [
-    stretches.pigeon,
-    stretches.quadStretch,
-    stretches.hamstringStretch,
-    stretches.childsPoseSideReach,
+    moves.pigeon,
+    moves.quadStretch,
+    moves.hamstringStretch,
+    moves.childsPoseSideReach,
   ],
   upper: [
-    stretches.doorwayChest,
-    stretches.shoulderCross,
-    stretches.childsPose,
-    stretches.threadNeedle,
+    moves.doorwayChest,
+    moves.shoulderCross,
+    moves.childsPose,
+    moves.threadNeedle,
   ],
   gluteQuad: [
-    stretches.couchStretch,
-    stretches.figure4,
-    stretches.forwardFold,
-    stretches.happyBaby,
+    moves.couchStretch,
+    moves.figure4,
+    moves.forwardFold,
+    moves.happyBaby,
   ],
   pilatesCore: [
-    stretches.supineTwist60,
-    stretches.childsPose,
-    stretches.cobraChildFlow,
-    stretches.seatedForwardFold,
+    moves.supineTwist60,
+    moves.childsPose,
+    moves.cobraChildFlow,
+    moves.seatedForwardFold,
   ],
   pilatesLower: [
-    stretches.pigeon,
-    stretches.figure4,
-    stretches.happyBaby,
-    stretches.supineTwist30,
+    moves.pigeon,
+    moves.figure4,
+    moves.happyBaby,
+    moves.supineTwist30,
   ],
 };
 
