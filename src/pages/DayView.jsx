@@ -52,15 +52,50 @@ export default function DayView({ completed, onToggle }) {
               </span>
             </div>
             <div className="space-y-4">
-              {d.workout.map((ex, i) => {
-                const key = `${idx}-ex-${i}`;
+              {groupRows(d.workout).map((row, ri) => {
+                if (row.type === "single") {
+                  const key = `${idx}-ex-${row.i}`;
+                  return (
+                    <ExerciseCard
+                      key={key}
+                      exercise={row.ex}
+                      done={!!completed[key]}
+                      onToggle={() => onToggle(key)}
+                    />
+                  );
+                }
                 return (
-                  <ExerciseCard
-                    key={i}
-                    exercise={ex}
-                    done={!!completed[key]}
-                    onToggle={() => onToggle(key)}
-                  />
+                  <div
+                    key={`g-${ri}`}
+                    className="rounded-2xl p-3 border-2 border-dashed space-y-3"
+                    style={{ borderColor: COLORS.terracotta, backgroundColor: COLORS.blush }}
+                  >
+                    <div className="flex items-center justify-between px-2 pt-1">
+                      <span
+                        className="text-xs uppercase tracking-widest"
+                        style={{ color: COLORS.terracotta, fontFamily: FONT_SANS, fontWeight: 700 }}
+                      >
+                        Superset {row.label}
+                      </span>
+                      <span
+                        className="text-xs"
+                        style={{ color: COLORS.inkSoft, fontFamily: FONT_SANS }}
+                      >
+                        Alternate, minimal rest between
+                      </span>
+                    </div>
+                    {row.items.map(({ ex, i }) => {
+                      const key = `${idx}-ex-${i}`;
+                      return (
+                        <ExerciseCard
+                          key={key}
+                          exercise={ex}
+                          done={!!completed[key]}
+                          onToggle={() => onToggle(key)}
+                        />
+                      );
+                    })}
+                  </div>
                 );
               })}
             </div>
@@ -86,4 +121,25 @@ export default function DayView({ completed, onToggle }) {
       )}
     </div>
   );
+}
+
+// Collapse consecutive workout entries sharing a `group` letter into a single
+// superset row; ungrouped entries pass through as singles.
+function groupRows(workout) {
+  const rows = [];
+  let cur = null;
+  workout.forEach((ex, i) => {
+    if (ex.group) {
+      if (cur && cur.label === ex.group) {
+        cur.items.push({ ex, i });
+      } else {
+        cur = { type: "group", label: ex.group, items: [{ ex, i }] };
+        rows.push(cur);
+      }
+    } else {
+      cur = null;
+      rows.push({ type: "single", ex, i });
+    }
+  });
+  return rows;
 }

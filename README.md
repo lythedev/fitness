@@ -73,14 +73,15 @@ Uses `HashRouter` from `react-router-dom`, so URLs look like `/fitness/#/day/0`.
 
 ## Data model
 
-The schedule is split into three layers so adding a new routine is a few lines, not a full re-write:
+The schedule is split into layers so adding a new routine is a few lines, not a full re-write:
 
 - **`src/data/exercises.js`** — canonical exercise library. Each entry has `name`, `image` (file slug), `cue`, and optional `timer` (default seconds for time-based moves like Plank).
-- **`src/data/routines.js`** — named routines (e.g. `gluteDay`, `upperBodyCore`). A workout entry references an exercise by id and supplies per-routine `sets`; it can override `name`, `cue`, or `timer` for that specific use. Warm-up / cool-down items are plain strings (rep-based) or `{ text, timer }` (timed).
+- **`src/data/blocks.js`** — reusable warm-up / cool-down primitives. Atoms (`cardio.inclineWalk3`, `stretches.pigeon`, `mobility.catCow`) compose into named blocks (`warmups.glute`, `cooldowns.upper`) that routines reference directly. Shared closing taglines live here too.
+- **`src/data/routines.js`** — named routines (e.g. `gluteDay`, `upperBodyCore`). A workout entry references an exercise by id and supplies per-routine `sets`; it can override `name`, `cue`, or `timer` for that specific use. Adjacent entries with the same `group` letter (`"A"`, `"B"`, …) render as a labeled superset. Warm-up / cool-down arrays are pulled from `blocks.js`.
 - **`src/data/week.js`** — the week schedule, mapping each day to a `routineId` and a day-flavored `accent` line. Reorder the week or swap routines without touching the routine itself.
 - **`src/data/index.js`** — resolves the schedule and re-exports a single `week` array (each entry has its routine merged in and exercise refs replaced with full objects). UI code imports from `"../data"` and never touches the raw layers.
 
-To add a new routine: define it in `routines.js`, then point a day at it in `week.js`.
+To add a new routine: define it in `routines.js`, reusing blocks where you can, then point a day at it in `week.js`.
 
 ## Project structure
 
