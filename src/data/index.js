@@ -29,7 +29,6 @@ function resolveDay(d) {
 export const week = weekDays.map(resolveDay);
 
 export const restCopy = {
-  pilates: "Show up, move well, and let it feel good. No need to push intensity here — the lifting days do the heavy work.",
   active: "Get outside if you can. Walking is one of the most underrated tools for body composition. Aim for 7–10k steps.",
   rest: "Recovery is when growth actually happens. Hydrate, sleep, eat your protein. The work this week pays off through rest.",
 };
